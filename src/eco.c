@@ -87,14 +87,13 @@ eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
   memset(eco, 0, sizeof(eco_t));
 
   // Set up stack:
-  uint64_t rbp = (uint64_t)stack + stacksize;
-  // System V ABI requires 16-bit stack alignment at function entry:
-  rbp &= ~0x0F;
-
-  // insert return-handle:
-  void** sp = (void**)(rbp -= sizeof(void*)*2);
-  0[sp] = _eco_return_handle_entry;
-  1[sp] = eco;
+  uint64_t bp = (uint64_t)stack + stacksize;
+  // System V ABI requires 16-bit stack alignment BEFORE the call-instruction
+  bp &= ~0x0F;
+  // insert return-handle (and make it look like we did a call-instruction):
+  void** sp = (void**)(bp - sizeof(void*)*3);
+  sp[0] = _eco_return_handle_entry;
+  sp[1] = eco;
 
   eco->_stack.memptr = stack;
   eco->_stack.memsize = stacksize;
@@ -104,6 +103,7 @@ eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
   // set up registers
   eco->_regs[ECO_REG_RETADDR] = (uint64_t)entry;
   eco->_regs[ECO_REG_SP] = (uint64_t)sp;
+  eco->_regs[ECO_REG_BP] = (uint64_t)bp;
   eco->_regs[ECO_REG_FPU] = eco_gtls_fpucw_mxcsr;
 }
 
