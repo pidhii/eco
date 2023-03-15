@@ -1,4 +1,4 @@
-#include "eco.h"
+#include "eco/eco.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -71,11 +71,11 @@ main()
   eco_init_this_thread();
 
   eco_stack_t foostack;
-  eco_allocate_guarded_stack(2, &foostack);
+  eco_allocate_guarded_stack(1, &foostack);
   eco_init(&fooctx, foo, foostack.stack, foostack.stack_size);
 
   eco_stack_t barstack;
-  eco_allocate_guarded_stack(2, &barstack);
+  eco_allocate_guarded_stack(1, &barstack);
   eco_init(&barctx, bar, barstack.stack, barstack.stack_size);
 
   fprintf(stderr, "[main] main: %p\n", &mainctx);

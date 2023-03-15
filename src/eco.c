@@ -2,7 +2,7 @@
 # error "Nicht verstehen..."
 #endif
 
-#include "eco.h"
+#include "eco/eco.h"
 
 #include <string.h>
 #include <stdint.h>
