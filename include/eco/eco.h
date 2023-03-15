@@ -45,6 +45,7 @@ struct eco_t {
   bool _returned;
 
   eco_return_handle_t return_handle;
+  void *udata;
 };
 
 void
