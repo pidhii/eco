@@ -83,7 +83,6 @@ _eco_save_fpucw_mxcsr:
 
 
 
-.globl abort
 .globl _eco_return_handle
 .globl _eco_return_handle_entry
 .type  _eco_return_handle_entry, @function
@@ -91,6 +90,7 @@ _eco_save_fpucw_mxcsr:
 _eco_return_handle_entry:
 #if defined(__pic__) || defined(__PIC__)
     pop     rdi
+    push    0x00 // to preserve stack alignment
     call    _eco_return_handle@PLT
 #else
     call    _eco_return_handle
