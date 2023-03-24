@@ -6,6 +6,7 @@ enable_language (C ASM)
 option (BUILD_SHARED_LIBRARY "Build shared library" ON)
 option (BUILD_STATIC_LIBRARY "Build static library" ON)
 option (BUILD_TESTS "Build tests" ON)
+option (WITH_VALGRIND "Enable valgrind support" ON)
 
 if (BUILD_TESTS)
   enable_testing ()
@@ -28,6 +29,9 @@ list (APPEND ECO_SRC ${ECO_C_SRC} ${ECO_ASM_SRC})
 
 
 include_directories (${CMAKE_SOURCE_DIR}/include)
+if (WITH_VALGRIND)
+  add_definitions (-DECO_WITH_VALGRIND=1)
+endif (WITH_VALGRIND)
 
 
 install (DIRECTORY ${CMAKE_SOURCE_DIR}/include DESTINATION ".")

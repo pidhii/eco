@@ -27,18 +27,14 @@ typedef void (*eco_entry_point_t)(/* eco_t *this, eco_t *caller, void *udata */)
 
 typedef void (*eco_return_handle_t)(eco_t*);
 
-typedef struct eco_stack_info_t {
-  void *memptr;
-  size_t memsize;
-  unsigned valgrind_stack_id;
-} eco_stack_info_t;
-
 struct eco_t {
   uint64_t _regs[9];
   struct {
     void *memptr;
     size_t memsize;
+#ifdef ECO_WITH_VALGRIND
     unsigned valgrind_stack_id;
+#endif
   } _stack;
 
   eco_t *_last_caller;

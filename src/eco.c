@@ -11,7 +11,9 @@
 
 #include <sys/mman.h>
 
-#include <valgrind/valgrind.h>
+#ifdef ECO_WITH_VALGRIND
+# include <valgrind/valgrind.h>
+#endif
 
 
 static __thread uint64_t
@@ -97,8 +99,10 @@ eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
 
   eco->_stack.memptr = stack;
   eco->_stack.memsize = stacksize;
+#ifdef ECO_WITH_VALGRIND
   eco->_stack.valgrind_stack_id =
     VALGRIND_STACK_REGISTER(stack, (uint64_t)stack + stacksize);
+#endif
 
   // set up registers
   eco->_regs[ECO_REG_RETADDR] = (uint64_t)entry;
@@ -110,7 +114,9 @@ eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
 void
 eco_cleanup(eco_t *eco)
 {
+#ifdef ECO_WITH_VALGRIND
   VALGRIND_STACK_DEREGISTER(eco->_stack.valgrind_stack_id);
+#endif
 }
 
 bool
