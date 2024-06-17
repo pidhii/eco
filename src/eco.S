@@ -88,9 +88,9 @@ _eco_save_fpucw_mxcsr:
 .type  _eco_return_handle_entry, @function
 .intel_syntax noprefix
 _eco_return_handle_entry:
-#if defined(__pic__) || defined(__PIC__)
     pop     rdi
     push    0x00 // to preserve stack alignment
+#if defined(__pic__) || defined(__PIC__)
     call    _eco_return_handle@PLT
 #else
     call    _eco_return_handle
