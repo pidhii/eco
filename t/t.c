@@ -88,12 +88,12 @@ main()
 
   eco_stack_t foostack;
   eco_allocate_guarded_stack(1, &foostack);
-  eco_init(&fooctx, foo, foostack.stack, foostack.stack_size);
+  eco_init(&fooctx, foo, NULL, foostack.stack, foostack.stack_size);
   fooctx.return_handle = foo_return_handle;
 
   eco_stack_t barstack;
   eco_allocate_guarded_stack(1, &barstack);
-  eco_init(&barctx, bar, barstack.stack, barstack.stack_size);
+  eco_init(&barctx, bar, NULL, barstack.stack, barstack.stack_size);
   barctx.return_handle = bar_return_handle;
 
   fprintf(stderr, "[main] main: %p\n", &mainctx);

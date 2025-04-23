@@ -23,7 +23,8 @@ extern "C" {
 
 typedef struct eco_t eco_t;
 
-typedef void (*eco_entry_point_t)(/* eco_t *this, eco_t *caller, void *udata */);
+/*typedef void (*eco_entry_point_t)();*/
+typedef void (*eco_entry_point_t)(eco_t *thisco, eco_t *caller, void *udata);
 
 typedef void (*eco_return_handle_t)(eco_t*);
 
@@ -42,6 +43,8 @@ struct eco_t {
 
   eco_return_handle_t return_handle;
   void *udata;
+
+  eco_t *return_co;
 };
 
 void
@@ -67,7 +70,8 @@ eco_destroy_guarded_stack(eco_stack_t *stack);
  * all of your most wicked nightmares in one go.
  */
 void
-eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize);
+eco_init(eco_t *eco, eco_entry_point_t entry, eco_t *returnco, void *stack,
+         size_t stacksize);
 
 void
 eco_cleanup(eco_t *eco);

@@ -45,7 +45,8 @@ _eco_return_handle(eco_t *this)
   while (true)
   {
     this->_returned = true; // just in case someone decides to touch it
-    eco_switch(this, this->_last_caller, NULL, NULL, NULL);
+    eco_switch(this, this->return_co ? this->return_co : this->_last_caller,
+               NULL, NULL, NULL);
   }
 }
 
@@ -84,7 +85,8 @@ eco_destroy_guarded_stack(eco_stack_t *stack)
 
 
 void
-eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
+eco_init(eco_t *eco, eco_entry_point_t entry, eco_t *returnco, void *stack,
+         size_t stacksize)
 {
   memset(eco, 0, sizeof(eco_t));
 
@@ -109,6 +111,9 @@ eco_init(eco_t *eco, eco_entry_point_t entry, void *stack, size_t stacksize)
   eco->_regs[ECO_REG_SP] = (uint64_t)sp;
   eco->_regs[ECO_REG_BP] = (uint64_t)bp;
   eco->_regs[ECO_REG_FPU] = eco_gtls_fpucw_mxcsr;
+
+  // set up return destination
+  eco->return_co = returnco;
 }
 
 void
