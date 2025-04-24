@@ -5,12 +5,12 @@ enable_language (C ASM)
 
 option (BUILD_SHARED_LIBRARY "Build shared library" ON)
 option (BUILD_STATIC_LIBRARY "Build static library" ON)
-option (BUILD_TESTS "Build tests" ON)
-option (WITH_VALGRIND "Enable valgrind support" ON)
+option (ECO_BUILD_TESTS "Build tests" ON)
+option (ECO_WITH_VALGRIND "Enable valgrind support" ON)
 
-if (BUILD_TESTS)
+if (ECO_BUILD_TESTS)
   enable_testing ()
-endif (BUILD_TESTS)
+endif (ECO_BUILD_TESTS)
 
 
 set (CMAKE_C_STANDARD 99)
@@ -18,8 +18,8 @@ set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og -ggdb")
 set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 
 
-file (GLOB ECO_C_SRC ${CMAKE_SOURCE_DIR}/src/*.c)
-file (GLOB ECO_ASM_SRC ${CMAKE_SOURCE_DIR}/src/*.S)
+file (GLOB ECO_C_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
+file (GLOB ECO_ASM_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.S)
 foreach (file ${ECO_ASM_SRC})
   set_property (
     SOURCE ${file}
@@ -28,15 +28,15 @@ endforeach()
 list (APPEND ECO_SRC ${ECO_C_SRC} ${ECO_ASM_SRC})
 
 
-include_directories (${CMAKE_SOURCE_DIR}/include)
-if (WITH_VALGRIND)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (ECO_WITH_VALGRIND)
   add_definitions (-DECO_WITH_VALGRIND=1)
-endif (WITH_VALGRIND)
+endif (ECO_WITH_VALGRIND)
 
 
-install (DIRECTORY ${CMAKE_SOURCE_DIR}/include DESTINATION ".")
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include DESTINATION ".")
 if (CMAKE_INSTALL_PREFIX)
-  configure_file (${CMAKE_SOURCE_DIR}/eco.pc ${CMAKE_BINARY_DIR}/eco.pc @ONLY)
+  configure_file (${CMAKE_CURRENT_SOURCE_DIR}/eco.pc ${CMAKE_BINARY_DIR}/eco.pc @ONLY)
   install (FILES ${CMAKE_BINARY_DIR}/eco.pc DESTINATION lib/pkgconfig)
 endif (CMAKE_INSTALL_PREFIX)
 
@@ -60,9 +60,8 @@ if (BUILD_STATIC_LIBRARY)
 endif (BUILD_STATIC_LIBRARY)
 
 
-if (BUILD_TESTS)
-  add_executable (t ${CMAKE_SOURCE_DIR}/t/t.c $<TARGET_OBJECTS:eco_a>)
+if (ECO_BUILD_TESTS)
+  add_executable (t ${CMAKE_CURRENT_SOURCE_DIR}/t/t.c $<TARGET_OBJECTS:eco_a>)
   add_dependencies (t eco_a)
   add_test (t ${CMAKE_BINARY_DIR}/t)
-endif (BUILD_TESTS)
-
+endif (ECO_BUILD_TESTS)
